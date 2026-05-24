@@ -342,8 +342,8 @@ body {
 /* ===== Gallery Grid ===== */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 160px;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 200px;
   gap: 0.75rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -426,21 +426,26 @@ body {
   filter: brightness(1.05) contrast(1.05);
 }
 
-/* Aspect ratio based grid spanning */
-.gallery-card.wide {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
-.gallery-card.tall {
-  grid-column: span 1;
-  grid-row: span 2;
-}
-
+/* Default 1-col layout: all cards span full width */
+.gallery-card.wide,
+.gallery-card.tall,
 .gallery-card.square,
 .gallery-card.loading {
   grid-column: span 1;
   grid-row: span 1;
+}
+
+/* 2+ column layout spanning */
+@media (min-width: 560px) {
+  .gallery-card.wide {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+  }
+
+  .gallery-card.tall {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
 }
 
 .gallery-card-caption {
@@ -510,6 +515,13 @@ body {
   animation: shimmer 1.5s infinite;
 }
 
+@media (min-width: 560px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 180px;
+  }
+}
+
 @media (min-width: 640px) {
   .gallery-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -527,12 +539,6 @@ body {
 
   .gallery-card.wide {
     grid-column: span 2;
-    grid-row: span 1;
-  }
-
-  .gallery-card.tall {
-    grid-column: span 1;
-    grid-row: span 2;
   }
 }
 
@@ -767,4 +773,150 @@ body {
 .home-locked {
   position: fixed;
   inset: 0;
+}
+
+/* ===== Mobile Optimizations ===== */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* --- Touch device: show hover-only effects --- */
+@media (hover: none) and (pointer: coarse) {
+  .gallery-card::before {
+    opacity: 0.25;
+  }
+
+  .gallery-card .gallery-card-caption {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+
+  .gallery-card .photo-index {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+
+  .home-nav-card::before {
+    opacity: 0.2;
+  }
+
+  .glass-card {
+    border-color: rgba(0, 212, 255, 0.06);
+  }
+}
+
+/* --- Active/tap press feedback --- */
+.gallery-card:active {
+  transform: scale(0.96) !important;
+  transition: transform 0.12s ease !important;
+}
+
+.gallery-card:active img {
+  transform: scale(1.06);
+  filter: brightness(1.12);
+}
+
+.glass-card:active {
+  transform: scale(0.975) !important;
+  background: rgba(255, 255, 255, 0.06);
+  transition: transform 0.12s ease, background 0.12s ease !important;
+}
+
+.home-nav-card:active {
+  transform: scale(0.92);
+  transition: transform 0.12s ease !important;
+  background: var(--color-accent-bg);
+}
+
+a:active,
+button:active {
+  opacity: 0.7;
+  transition: opacity 0.1s ease;
+}
+
+/* --- Tap ripple effect --- */
+@keyframes rippleOut {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.tap-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.tap-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  margin-left: -50px;
+  margin-top: -50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-accent-glow-strong) 0%, transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.tap-ripple:active::after {
+  animation: rippleOut 0.6s ease-out;
+}
+
+/* --- Pulse hint for interactive elements --- */
+@keyframes pulseHint {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--color-accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.pulse-hint {
+  animation: pulseHint 2.5s ease-out infinite;
+}
+
+/* --- Safe area for notched phones --- */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* --- Improved scroll reveal for mobile --- */
+@media (max-width: 768px) {
+  .reveal {
+    transform: translateY(16px);
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+  }
+}
+
+/* --- Gallery card mobile polish --- */
+@media (max-width: 560px) {
+  .gallery-card {
+    border-radius: 0.75rem;
+  }
+
+  .gallery-card::before {
+    border-radius: 0.75rem;
+  }
+
+  .gallery-card::after {
+    border-radius: 0.75rem;
+  }
 }

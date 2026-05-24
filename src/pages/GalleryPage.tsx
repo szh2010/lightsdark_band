@@ -1,29 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import PhotoViewer from '@/components/PhotoViewer'
 import { photos } from '@/data/photos'
-
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible')
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  return ref
-}
+import { useScrollReveal } from '@/hooks/useScrollReveal'
 
 type AspectClass = 'wide' | 'tall' | 'square' | 'loading'
 
@@ -63,20 +41,18 @@ function GalleryCard({
     }
   }
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const card = cardRef.current
     if (!card) return
     const rect = card.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width) * 100
-    const y = ((e.clientY - rect.top) / rect.height) * 100
-    card.style.setProperty('--mouse-x', `${x}%`)
-    card.style.setProperty('--mouse-y', `${y}%`)
-  }
+    card.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`)
+    card.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`)
+  }, [])
 
   return (
     <div
       ref={cardRef}
-      className={`gallery-card ${aspectClass}`}
+      className={`gallery-card tap-ripple ${aspectClass}`}
       onClick={onClick}
       onMouseMove={handleMouseMove}
       style={{ animationDelay: `${(index % 8) * 80}ms` }}

@@ -1,28 +1,5 @@
-import { useEffect, useRef } from 'react'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
-
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible')
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  return ref
-}
+import { useScrollReveal } from '@/hooks/useScrollReveal'
 
 export default function AboutPage() {
   const headerRef = useScrollReveal()

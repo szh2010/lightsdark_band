@@ -1,8 +1,6 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
-import { useThemeStore } from '@/store/themeStore'
 
 function ScrollProgress() {
   const [progress, setProgress] = useState(0)
@@ -42,6 +40,9 @@ function CursorGlow() {
     const glow = glowRef.current
     if (!glow) return
 
+    const canHover = window.matchMedia('(hover: hover)').matches
+    if (!canHover) return
+
     const updatePosition = () => {
       glow.style.left = `${posRef.current.x}px`
       glow.style.top = `${posRef.current.y}px`
@@ -61,14 +62,9 @@ function CursorGlow() {
 }
 
 export default function Layout() {
-  const theme = useThemeStore((s) => s.theme)
   const location = useLocation()
   const isHome = location.pathname === '/'
   const mainRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
 
   useEffect(() => {
     if (isHome) {
@@ -133,7 +129,7 @@ export default function Layout() {
       </main>
       {!isHome && (
         <footer
-          className="border-t py-6 mt-12"
+          className="border-t py-6 mt-12 pb-safe"
           style={{ borderColor: 'var(--color-border)' }}
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

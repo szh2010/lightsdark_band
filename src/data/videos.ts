@@ -4,6 +4,11 @@ export interface VideoPageData {
     description: string
     qrCodeUrl: string
   }
+  neteaseChannel: {
+    name: string
+    description: string
+    qrCodeUrl: string
+  }
   downloads: {
     label: string
     url: string
@@ -15,6 +20,11 @@ export const videoPageData: VideoPageData = {
   wechatChannel: {
     name: '暗夜星空乐队 Lightsdark Band',
     description: '关注微信视频号，观看暗夜星空乐队最新演出视频、排练花絮和原创音乐MV。定期更新演出预告与幕后故事。',
+    qrCodeUrl: 'https://edgeoneimg.cdn.sn/i/6a124e89b6a6f_1779584649.webp',
+  },
+  neteaseChannel: {
+    name: '暗夜星空乐队 Lightsdark Band',
+    description: '在网易云音乐收听暗夜星空乐队原创及翻唱作品，收藏你喜欢的歌曲，与我们互动交流。',
     qrCodeUrl: 'https://edgeoneimg.cdn.sn/i/6a124e89b6a6f_1779584649.webp',
   },
   downloads: [

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Photo } from '@/data/photos'
 
@@ -12,6 +12,7 @@ interface PhotoViewerProps {
 
 export default function PhotoViewer({ photos, currentIndex, onClose, onPrev, onNext }: PhotoViewerProps) {
   const photo = photos[currentIndex]
+  const touchRef = useRef({ startX: 0, startY: 0 })
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
@@ -28,11 +29,33 @@ export default function PhotoViewer({ photos, currentIndex, onClose, onPrev, onN
     }
   }, [handleKeyDown])
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchRef.current = {
+      startX: e.touches[0].clientX,
+      startY: e.touches[0].clientY,
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const { startX, startY } = touchRef.current
+    const endX = e.changedTouches[0].clientX
+    const endY = e.changedTouches[0].clientY
+    const dx = endX - startX
+    const dy = endY - startY
+
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx > 0) onPrev()
+      else onNext()
+    }
+  }
+
   return (
     <div
       className="photo-viewer-overlay fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: 'rgba(5, 11, 20, 0.95)', backdropFilter: 'blur(20px)' }}
+      style={{ backgroundColor: 'rgba(5, 11, 20, 0.95)', backdropFilter: 'blur(20px)', touchAction: 'none' }}
       onClick={onClose}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Ambient glow behind image */}
       <div

@@ -14,7 +14,7 @@ export default function HomePage() {
   const toggleTheme = useThemeStore((s) => s.toggleTheme)
   const [song, setSong] = useState(() => pickSong())
   const [activeIdx, setActiveIdx] = useState(2)
-  const [visible, setVisible] = useState(false)
+  const [visible] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const starCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -45,10 +45,6 @@ export default function HomePage() {
     return { lines: slice.slice(0, 5), visibleActiveIdx: Math.min(idx, 2) }
   }, [lyrics])
 
-  useEffect(() => {
-    setVisible(true)
-  }, [])
-
   // Star field animation for night mode
   useEffect(() => {
     if (!isNight) return
@@ -76,15 +72,16 @@ export default function HomePage() {
 
     let frame = 0
     function animate() {
-      ctx!.clearRect(0, 0, canvas.width, canvas.height)
+      if (!ctx) return
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
       frame++
 
       for (const star of stars) {
         const twinkle = Math.sin(frame * 0.03 + star.phase) * 0.4 + 0.6
-        ctx!.beginPath()
-        ctx!.arc(star.x, star.y, star.r, 0, Math.PI * 2)
-        ctx!.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle})`
-        ctx!.fill()
+        ctx.beginPath()
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle})`
+        ctx.fill()
 
         star.y += star.speed
         if (star.y > canvas.height) {
