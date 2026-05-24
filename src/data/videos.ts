@@ -25,7 +25,7 @@ export const videoPageData: VideoPageData = {
   neteaseChannel: {
     name: '暗夜星空乐队 Lightsdark Band',
     description: '在网易云音乐收听暗夜星空乐队原创及翻唱作品，收藏你喜欢的歌曲，与我们互动交流。',
-    qrCodeUrl: 'https://edgeoneimg.cdn.sn/i/6a124e89b6a6f_1779584649.webp',
+    qrCodeUrl: 'https://edgeoneimg.cdn.sn/i/6a12b40b7959e_1779610635.webp',
   },
   downloads: [
     {

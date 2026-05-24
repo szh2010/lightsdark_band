@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Navbar from './Navbar'
+import { useThemeStore } from '@/store/themeStore'
 
 function ScrollProgress() {
   const [progress, setProgress] = useState(0)
@@ -62,9 +63,15 @@ function CursorGlow() {
 }
 
 export default function Layout() {
+  const theme = useThemeStore((s) => s.theme)
   const location = useLocation()
   const isHome = location.pathname === '/'
   const mainRef = useRef<HTMLElement>(null)
+
+  // Sync data-theme to DOM on mount and theme change
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   useEffect(() => {
     if (isHome) {
